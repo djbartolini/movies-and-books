@@ -2,19 +2,36 @@ var googleKey = "AIzaSyAK1n111P0xYxlHtbKVeGFq5IZDT_K95eM";
 
 var searchBtn = document.querySelector('.search-btn');
 var userSearch = document.querySelector('.user-input');
-var cardParent = document.querySelector('.movie-card-parent');
+var movieCardParent = document.querySelector('.movie-card-parent');
+var bookCardParent = document.querySelector('.book-card-parent');
+var buttonParent = document.querySelector('.button-parent');
+var descParent = document.querySelector('.desc-parent');
 
 var handleSearch = function(event) {
     event.preventDefault();
     var q = userSearch.value.trim();
-    // getBookData(q)
+    getBookData(q);
     getMovieData(q);
 }
 
 searchBtn.addEventListener('click', handleSearch);
 
 var getBookData = function(q) {
-
+    var bookUrl = "https://www.googleapis.com/books/v1/volumes?q=" + q;
+    fetch(bookUrl)
+    .then(function (response) {
+        if (response.ok) {
+            response.json().then(function (data) {
+                console.log(data);
+                displayBooks(data);
+            });
+        } else {
+            alert('Error: ' + response.statusText);
+        }
+    })
+    .catch(function (error) {
+        alert('Unable to connect to GitHub');
+    });
 }
 
 var getMovieData = function(q) {
@@ -37,7 +54,10 @@ var getMovieData = function(q) {
 
 var displayMovies = function(movieData) {
     console.log(movieData.Search);
+    movieCardParent.innerHTML = null;
+
     for (var i = 0; i < movieData.Search.length; i++) {
+
         var title = movieData.Search[i].Title;
         var poster = movieData.Search[i].Poster;
         var year = movieData.Search[i].Year;
@@ -62,18 +82,92 @@ var displayMovies = function(movieData) {
         a.classList = 'card-link';
 
         img.setAttribute('src', poster);
-        img.src = poster;
-        img.alt = 'Poster of the movie';
+        img.setAttribute('alt', 'Poster for: ' + title);
         h5.textContent = title;
         p.textContent = year;
         a.textContent = 'https://www.imdb.com/title/' + imdbID;
         a.href = 'https://www.imdb.com/title/' + imdbID;
 
-        cardParent.appendChild(card);
+        movieCardParent.appendChild(card);
         card.appendChild(img);
         card.appendChild(cardBody);
         cardBody.appendChild(h5);
         cardBody.appendChild(p);
         cardBody.appendChild(a);
+    }
+}
+
+var displayBooks = function(bookData) {
+
+    bookCardParent.innerHTML = null;
+    
+    for (var i = 0; i < bookData.items.length; i++) {
+        var title = bookData.items[i].volumeInfo.title;
+        var author = bookData.items[i].volumeInfo.authors;
+        var cover = bookData.items[i].volumeInfo.imageLinks.thumbnail;
+        var rating = bookData.items[i].volumeInfo.averageRating;
+        var date = bookData.items[i].volumeInfo.publishedDate;
+        var description = bookData.items[i].volumeInfo.description;
+        var link = bookData.items[i].volumeInfo.infoLink;
+        
+        var card = document.createElement('div');
+        var cardBodyTop = document.createElement('div');
+        var cardBodyBottom = document.createElement('div');
+        var img = document.createElement('img');
+        var h5 = document.createElement('h5');
+        var expandA = document.createElement('a');
+        var expandDiv = document.createElement('div');
+        var descDiv = document.createElement('div');
+        var ul = document.createElement('ul');
+        var liAuthor = document.createElement('li');
+        var liDate = document.createElement('li');
+        var liRating = document.createElement('li');
+        var a = document.createElement('a');
+
+        card.classList = 'card';
+        cardBodyTop.classList = 'card-body';
+        cardBodyBottom.classList = 'card-body';
+        img.classList = 'card-img-top';
+        h5.classList = 'card-title';
+        expandA.classList = 'btn btn-primary';
+        expandA.setAttribute('data-bs-toggle', 'collapse');
+        expandA.setAttribute('href', '#collapseExample');
+        expandA.setAttribute('role', 'button');
+        expandA.setAttribute('aria-expanded', 'false');
+        expandA.setAttribute('aria-controls', 'collapseExample');
+        expandA.textContent = 'Click for description';
+        expandDiv.classList = 'collapse';
+        expandDiv.setAttribute('id', 'collapseExample');
+        descDiv.classList = 'card card-body';
+        ul.classList = 'list-group list-group-flush';
+        liAuthor.classList = 'list-group-item';
+        liDate.classList = 'list-group-item';
+        liRating.classList = 'list-group-item';
+        a.classList = 'card-link';
+
+        img.setAttribute('src', cover);
+        img.setAttribute('alt', 'Cover of the book: ' + title);
+        h5.textContent = title;
+        descDiv.textContent = description;
+        liAuthor.textContent = author;
+        liDate.textContent = date;
+        liRating.textContent = rating;
+        a.textContent = link;
+        a.href = link;
+
+        bookCardParent.appendChild(card);
+        card.appendChild(img);
+        card.appendChild(cardBodyTop);
+        cardBodyTop.appendChild(h5);
+        cardBodyTop.appendChild(expandA);
+        cardBodyTop.appendChild(expandDiv);
+        card.appendChild(ul);
+        ul.appendChild(liAuthor);
+        ul.appendChild(liDate);
+        ul.appendChild(liRating);
+        card.appendChild(cardBodyBottom);
+        cardBodyBottom.appendChild(a);
+
+        expandDiv.appendChild(descDiv);
     }
 }
