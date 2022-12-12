@@ -74,7 +74,7 @@ var displayMovies = function(movieData) {
         var p = document.createElement('p');
         var a = document.createElement('a');
 
-        card.classList = 'card';
+        card.classList = 'card h-100';
         cardBody.classList = 'card-body';
         img.classList = 'card-img-top';
         h5.classList = 'card-title';
@@ -83,10 +83,12 @@ var displayMovies = function(movieData) {
 
         img.setAttribute('src', poster);
         img.setAttribute('alt', 'Poster for: ' + title);
+        img.setAttribute('max-height', '350px')
         h5.textContent = title;
-        p.textContent = year;
+        p.textContent = 'Year released: ' + year;
         a.textContent = 'https://www.imdb.com/title/' + imdbID;
         a.href = 'https://www.imdb.com/title/' + imdbID;
+        a.setAttribute('target', '_blank')
 
         movieCardParent.appendChild(card);
         card.appendChild(img);
@@ -124,7 +126,7 @@ var displayBooks = function(bookData) {
         var liRating = document.createElement('li');
         var a = document.createElement('a');
 
-        card.classList = 'card';
+        card.classList = 'card h-100';
         cardBodyTop.classList = 'card-body';
         cardBodyBottom.classList = 'card-body';
         img.classList = 'card-img-top';
@@ -144,14 +146,16 @@ var displayBooks = function(bookData) {
         liDate.classList = 'list-group-item';
         liRating.classList = 'list-group-item';
         a.classList = 'card-link';
+        a.setAttribute('target', '_blank')
 
         img.setAttribute('src', cover);
         img.setAttribute('alt', 'Cover of the book: ' + title);
+        img.setAttribute('max-height', '350px')
         h5.textContent = title;
         descDiv.textContent = description;
-        liAuthor.textContent = author;
-        liDate.textContent = date;
-        liRating.textContent = rating;
+        liAuthor.textContent = 'Author: ' + author;
+        liDate.textContent = 'Release date: ' + date;
+        liRating.textContent = 'Rating: ' + rating;
         a.textContent = link;
         a.href = link;
 
