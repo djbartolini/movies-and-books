@@ -4,6 +4,7 @@ var movieCardParent = document.querySelector('.movie-card-parent');
 var bookCardParent = document.querySelector('.book-card-parent');
 var buttonParent = document.querySelector('.button-parent');
 var descParent = document.querySelector('.desc-parent');
+var fail = document.querySelector('.fail-button');
 
 var handleSearch = function(event) {
     event.preventDefault();
@@ -22,11 +23,11 @@ var getBookData = function(q) {
                 displayBooks(data);
             });
         } else {
-            alert('Error: ' + response.statusText);
+           fail.click();
         }
     })
     .catch(function (error) {
-        alert('Unable to connect to GitHub');
+        fail.click();
     });
 }
 
@@ -40,11 +41,11 @@ var getMovieData = function(q) {
                 displayMovies(data);
             });
         } else {
-            alert('Error: ' + response.statusText);
+            fail.click();
         }
     })
     .catch(function (error) {
-        alert('Unable to connect to GitHub');
+        fail.click();
     });
 }
 var getExtraMovieData = function(id) {
