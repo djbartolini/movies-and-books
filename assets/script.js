@@ -99,6 +99,14 @@ var displayMovies = function(movieData) {
     }
 }
 
+var toggleDescription = function(element) {
+    if (element.nextElementSibling.style.display === 'none') {
+        element.nextElementSibling.style.display = 'block';
+    } else {
+        element.nextElementSibling.style.display = 'none';
+    }
+};
+
 var displayBooks = function(bookData) {
 
     bookCardParent.innerHTML = null;
@@ -131,21 +139,17 @@ var displayBooks = function(bookData) {
         cardBodyBottom.classList = 'card-body';
         img.classList = 'card-img-top';
         h5.classList = 'card-title';
-        expandA.classList = 'btn btn-primary';
-        expandA.setAttribute('data-bs-toggle', 'collapse');
-        expandA.setAttribute('href', '#collapseExample');
-        expandA.setAttribute('role', 'button');
-        expandA.setAttribute('aria-expanded', 'false');
-        expandA.setAttribute('aria-controls', 'collapseExample');
+        expandA.classList = 'btn btn-primary toggle-description';
         expandA.textContent = 'Click for description';
-        expandDiv.classList = 'collapse';
-        expandDiv.setAttribute('id', 'collapseExample');
-        descDiv.classList = 'card card-body';
+        expandDiv.className = 'collapse';
+        expandDiv.setAttribute('id', bookData.items[i].id);
+        expandDiv.style.display = 'none';
+        descDiv.className = 'card card-body';
         ul.classList = 'list-group list-group-flush';
-        liAuthor.classList = 'list-group-item';
-        liDate.classList = 'list-group-item';
-        liRating.classList = 'list-group-item';
-        a.classList = 'card-link';
+        liAuthor.className = 'list-group-item';
+        liDate.className = 'list-group-item';
+        liRating.className = 'list-group-item';
+        a.className = 'card-link';
         a.setAttribute('target', '_blank')
 
         img.setAttribute('src', cover);
@@ -175,3 +179,9 @@ var displayBooks = function(bookData) {
         expandDiv.appendChild(descDiv);
     }
 }
+
+document.addEventListener('click', function(event) {
+    if (event.target.matches('.toggle-description')) {
+        toggleDescription(event.target);
+    }
+});
