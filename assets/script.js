@@ -1,5 +1,3 @@
-var googleKey = "AIzaSyAK1n111P0xYxlHtbKVeGFq5IZDT_K95eM";
-
 var searchBtn = document.querySelector('.search-btn');
 var userSearch = document.querySelector('.user-input');
 var movieCardParent = document.querySelector('.movie-card-parent');
@@ -13,8 +11,6 @@ var handleSearch = function(event) {
     getBookData(q);
     getMovieData(q);
 }
-
-searchBtn.addEventListener('click', handleSearch);
 
 var getBookData = function(q) {
     var bookUrl = "https://www.googleapis.com/books/v1/volumes?q=" + q;
@@ -35,7 +31,7 @@ var getBookData = function(q) {
 }
 
 var getMovieData = function(q) {
-    var movieUrl = "http://www.omdbapi.com/?apikey=trilogy&s=" + q + "&t=" + q;
+    var movieUrl = "http://www.omdbapi.com/?apikey=trilogy&type=movie&s=" + q + "&t=" + q;
     fetch(movieUrl)
     .then(function (response) {
         if (response.ok) {
@@ -51,6 +47,68 @@ var getMovieData = function(q) {
         alert('Unable to connect to GitHub');
     });
 }
+var getExtraMovieData = function(id) {
+    var movieUrl = "http://www.omdbapi.com/?apikey=trilogy&i=" + id;
+    fetch(movieUrl)
+    .then(function (response) {
+        if (response.ok) {
+            response.json().then(function (data) {
+                console.log(data);
+                displayExtraData(data, id);
+            });
+        } else {
+            alert('Error: ' + response.statusText);
+        }
+    })
+    .catch(function (error) {
+        alert('Unable to connect to GitHub');
+    });
+}
+
+var displayExtraData = function(extraData, id){
+    var director = extraData.Director;
+    var runtime = extraData.Runtime;
+    var plot = extraData.Plot;
+    var boxOffice = extraData.BoxOffice;
+    var imdbRating = extraData.imdbRating;
+    var button = document.getElementById(id).parentElement
+
+    var ul = document.createElement('ul');
+    var liDirector = document.createElement('li');
+    var liRuntime= document.createElement('li');
+    var liPlot = document.createElement('li');
+    var liBoxOffice = document.createElement('li');
+    var liImdbRating = document.createElement('li');
+
+    ul.classList = 'list-group list-group-flush';
+    ul.style.display = 'none';
+    liDirector.className = 'list-group-item';
+    liRuntime.className = 'list-group-item';
+    liPlot.className = 'list-group-item';
+    liBoxOffice.className = 'list-group-item';
+    liImdbRating.className = 'list-group-item';
+
+    
+    liDirector.textContent = 'Director: ' + director;
+    liRuntime.textContent = 'Runtime: ' + runtime;
+    liPlot.textContent = 'Plot: ' + plot;
+    liBoxOffice.textContent = 'Box Office: ' + boxOffice;
+    liImdbRating.textContent = 'IMDb Rating: ' + imdbRating;
+
+    button.appendChild(ul)
+    ul.appendChild(liDirector)
+    ul.appendChild(liRuntime)
+    ul.appendChild(liPlot)
+    ul.appendChild(liBoxOffice)
+    ul.appendChild(liImdbRating)
+
+    if (ul.style.display === 'none') {
+        ul.style.display = 'block';
+    } else {
+        ul.style.display = 'none';
+    }
+};
+
 
 var displayMovies = function(movieData) {
     console.log(movieData.Search);
@@ -73,12 +131,14 @@ var displayMovies = function(movieData) {
         var h5 = document.createElement('h5');
         var p = document.createElement('p');
         var a = document.createElement('a');
+        var button = document.createElement('a');
 
         card.classList = 'card h-100';
         cardBody.classList = 'card-body';
         img.classList = 'card-img-top';
         h5.classList = 'card-title';
         p.classList = 'card-text';
+        button.classList = 'btn btn-primary more-data';
         a.classList = 'card-link';
 
         img.setAttribute('src', poster);
@@ -86,6 +146,9 @@ var displayMovies = function(movieData) {
         img.setAttribute('max-height', '350px')
         h5.textContent = title;
         p.textContent = 'Year released: ' + year;
+        button.textContent = 'Click for more info';
+        button.setAttribute('type', 'button')
+        button.setAttribute('id', imdbID)
         a.textContent = 'https://www.imdb.com/title/' + imdbID;
         a.href = 'https://www.imdb.com/title/' + imdbID;
         a.setAttribute('target', '_blank')
@@ -95,6 +158,7 @@ var displayMovies = function(movieData) {
         card.appendChild(cardBody);
         cardBody.appendChild(h5);
         cardBody.appendChild(p);
+        cardBody.appendChild(button);
         cardBody.appendChild(a);
     }
 }
@@ -185,3 +249,10 @@ document.addEventListener('click', function(event) {
         toggleDescription(event.target);
     }
 });
+document.addEventListener('click', function(event) {
+    if (event.target.matches('.more-data')) {
+        var moreDataID = event.target.getAttribute('id')
+        getExtraMovieData(moreDataID);
+    }
+});
+searchBtn.addEventListener('click', handleSearch);
