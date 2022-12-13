@@ -144,7 +144,7 @@ var displayMovies = function(movieData) {
         var a = document.createElement('a');
         var button = document.createElement('a');
         
-        card.classList = 'card h-100';
+        card.classList = 'card h-100 m-3';
         cardBody.classList = 'card-body';
         img.classList = 'card-img-top';
         h5.classList = 'card-title';
@@ -220,7 +220,7 @@ var displayBooks = function(bookData) {
         var liRating = document.createElement('li');
         var a = document.createElement('a');
         
-        card.classList = 'card h-100';
+        card.classList = 'card h-100 m-3';
         cardBodyTop.classList = 'card-body';
         cardBodyBottom.classList = 'card-body';
         img.classList = 'card-img-top';
@@ -286,7 +286,7 @@ if (favorite === undefined || favorite === null) {
     for (var i = 0; i < favorite.length; i++) {
         var favoriteButton = document.createElement('button');
 
-        favoriteButton.classList = "btn btn-primary d-block m-2";
+        favoriteButton.classList = "btn btn-primary bg-gradient d-block m-2";
         favoriteButton.setAttribute('type', 'button');
         favoriteButton.textContent = favorite[i];
 
@@ -306,8 +306,12 @@ var toggleFavorite = function(target) {
         favoriteButton.textContent = favoriteTitle;
 
         leftParent.appendChild(favoriteButton);
-    } else {
-        favorite.splice(favoriteTitle);
+    } else if (favorite.includes(favoriteTitle)) {
+        favorite = favorite.filter(function(item) {
+            return item !== favoriteTitle; 
+        });
+        console.log(favorite);
+        localStorage.setItem("Title", JSON.stringify(favorite));
     }
 }
 

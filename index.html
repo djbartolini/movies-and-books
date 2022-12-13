@@ -13,11 +13,11 @@
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" 
         crossorigin="anonymous">
     </script>
-    <title>Movies and Books</title>
+    <title>To Read or to Watch?</title>
 </head>
-<body>
-    <header>
-        <h1 class="text-center mb-3">Movies and Books App</h1>
+<body class="bg-dark">
+    <header class="bg-primary bg-gradient p-2">
+        <h1 class="text-center mb-3">To Read or to Watch?</h1>
     </header>
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary d-none fail-button" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -43,12 +43,14 @@
     </div>
   </div>
     <div class="row min-vh-100 d-flex justify-content-center m-3">
-        <div class="col-8 col-md-4 col-lg-3 col-xxl-2 left-parent">
+        <div class="col-8 col-md-4 col-lg-3 col-xxl-2">
             <form class="col-8 col-md-4 col-lg-3 col-xxl-2 input-group mb-3">
                 <input type="text" class="user-input form-control" placeholder="Search your favorite book or movie" aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button class="search-btn btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
             </form>
-
+            <div class="d-grid left-parent">
+                <h5 class="text-center text-light">Favorites</h5>
+            </div>
         </div>
         <div class="col-12 col-md-4 col-lg-3 col-xxl-2">
             <div class="col-12 col-md-4 col-lg-3 col-xxl-2 books "></div>
@@ -88,7 +90,10 @@
             </div>
         </div>
     </div>
-    
+    <footer class="border-top border-light p-3">
+        <h6 class="text-light text-center">Brought to you by Breakout Room 3</h6>
+        <h6 class="text-light text-center">Made with JavaScript and BootStrap</h6>
+    </footer>
     <script src="./assets/script.js"></script>    
 </body>
 </html>
