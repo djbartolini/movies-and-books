@@ -2,6 +2,7 @@ var searchBtn = document.querySelector('.search-btn');
 var userSearch = document.querySelector('.user-input');
 var movieCardParent = document.querySelector('.movie-card-parent');
 var bookCardParent = document.querySelector('.book-card-parent');
+var leftParent = document.querySelector('.left-parent');
 var buttonParent = document.querySelector('.button-parent');
 var descParent = document.querySelector('.desc-parent');
 var fail = document.querySelector('.fail-button');
@@ -114,8 +115,7 @@ var showHide = function (target){
     if (target.nextElementSibling.style.display === "none"){
         target.nextElementSibling.style.display = "block";
         }    else{
-            target.nextElementSibling.style.display = "none";
-        
+            target.nextElementSibling.style.display = "none";   
     }
 }
 
@@ -138,17 +138,26 @@ var displayMovies = function(movieData) {
         var cardBody = document.createElement('div');
         var img = document.createElement('img');
         var h5 = document.createElement('h5');
+        var span = document.createElement('span');
+        var starIcon = document.createElement('i');
         var p = document.createElement('p');
         var a = document.createElement('a');
         var button = document.createElement('a');
         
-        card.classList = 'card h-100';
+        card.classList = 'card h-100 m-3';
         cardBody.classList = 'card-body';
         img.classList = 'card-img-top';
         h5.classList = 'card-title';
+        starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
         p.classList = 'card-text';
         button.classList = 'btn btn-primary more-data';
         a.classList = 'card-link';
+
+        if (favorite.includes(title)) {
+            starIcon.classList = 'fa-solid fa-star d-flex justify-content-end favorite';
+        } else {
+            starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
+        }
         
         img.setAttribute('src', poster);
         img.setAttribute('alt', 'Poster for: ' + title);
@@ -160,12 +169,14 @@ var displayMovies = function(movieData) {
         button.setAttribute('id', imdbID)
         a.textContent = 'https://www.imdb.com/title/' + imdbID;
         a.href = 'https://www.imdb.com/title/' + imdbID;
-        a.setAttribute('target', '_blank')
+        a.setAttribute('target', '_blank');
         
         movieCardParent.appendChild(card);
         card.appendChild(img);
         card.appendChild(cardBody);
-        cardBody.appendChild(h5);
+        cardBody.appendChild(span);
+        span.appendChild(h5);
+        span.appendChild(starIcon);
         cardBody.appendChild(p);
         cardBody.appendChild(button);
         cardBody.appendChild(a);
@@ -197,7 +208,9 @@ var displayBooks = function(bookData) {
         var cardBodyTop = document.createElement('div');
         var cardBodyBottom = document.createElement('div');
         var img = document.createElement('img');
+        var span = document.createElement('span');
         var h5 = document.createElement('h5');
+        var starIcon = document.createElement('i');
         var expandA = document.createElement('a');
         var expandDiv = document.createElement('div');
         var descDiv = document.createElement('div');
@@ -207,11 +220,12 @@ var displayBooks = function(bookData) {
         var liRating = document.createElement('li');
         var a = document.createElement('a');
         
-        card.classList = 'card h-100';
+        card.classList = 'card h-100 m-3';
         cardBodyTop.classList = 'card-body';
         cardBodyBottom.classList = 'card-body';
         img.classList = 'card-img-top';
         h5.classList = 'card-title';
+        // starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
         expandA.classList = 'btn btn-primary toggle-description';
         expandA.textContent = 'Click for description';
         expandDiv.className = 'collapse';
@@ -223,7 +237,13 @@ var displayBooks = function(bookData) {
         liDate.className = 'list-group-item';
         liRating.className = 'list-group-item';
         a.className = 'card-link';
-        a.setAttribute('target', '_blank')
+        a.setAttribute('target', '_blank');
+
+        if (favorite.includes(title)) {
+            starIcon.classList = 'fa-solid fa-star d-flex justify-content-end favorite';
+        } else {
+            starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
+        }
         
         img.setAttribute('src', cover);
         img.setAttribute('alt', 'Cover of the book: ' + title);
@@ -239,7 +259,9 @@ var displayBooks = function(bookData) {
         bookCardParent.appendChild(card);
         card.appendChild(img);
         card.appendChild(cardBodyTop);
-        cardBodyTop.appendChild(h5);
+        cardBodyTop.appendChild(span);
+        span.appendChild(h5);
+        span.appendChild(starIcon);
         cardBodyTop.appendChild(expandA);
         cardBodyTop.appendChild(expandDiv);
         card.appendChild(ul);
@@ -250,6 +272,46 @@ var displayBooks = function(bookData) {
         cardBodyBottom.appendChild(a);
         
         expandDiv.appendChild(descDiv);
+    }
+}
+
+var favorite = JSON.parse(localStorage.getItem('Title'));
+console.log(favorite);
+
+
+if (favorite === undefined || favorite === null) {
+    favorite = [];
+} else {
+    console.log(favorite);
+    for (var i = 0; i < favorite.length; i++) {
+        var favoriteButton = document.createElement('button');
+
+        favoriteButton.classList = "btn btn-primary bg-gradient d-block m-2";
+        favoriteButton.setAttribute('type', 'button');
+        favoriteButton.textContent = favorite[i];
+
+        leftParent.appendChild(favoriteButton);
+    }
+}
+
+var toggleFavorite = function(target) {
+    var favoriteTitle = target.previousElementSibling.innerHTML;
+    var favoriteButton = document.createElement('button');
+    if (target.matches('.fa-regular') && !favorite.includes(favoriteTitle)) {
+        favorite.push(favoriteTitle);
+        localStorage.setItem('Title', JSON.stringify(favorite));
+
+        favoriteButton.classList = "btn btn-primary d-block m-2";
+        favoriteButton.setAttribute('type', 'button');
+        favoriteButton.textContent = favoriteTitle;
+
+        leftParent.appendChild(favoriteButton);
+    } else if (favorite.includes(favoriteTitle)) {
+        favorite = favorite.filter(function(item) {
+            return item !== favoriteTitle; 
+        });
+        console.log(favorite);
+        localStorage.setItem("Title", JSON.stringify(favorite));
     }
 }
 
@@ -271,4 +333,12 @@ document.addEventListener('click', function(event) {
         
     }
 });
+document.addEventListener('click', function(event) {
+    if (event.target.matches('.favorite')) {
+        toggleFavorite(event.target);
+        event.target.classList.toggle('fa-solid');
+        event.target.classList.toggle('fa-regular');
+
+    }
+})
 searchBtn.addEventListener('click', handleSearch);
