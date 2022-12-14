@@ -7,6 +7,8 @@ var bottomParent = document.querySelector('.bottom-parent');
 var buttonParent = document.querySelector('.button-parent');
 var descParent = document.querySelector('.desc-parent');
 var fail = document.querySelector('.fail-button');
+var bookH5 = document.querySelector('.book-h5')
+var movieH5 = document.querySelector('.movie-h5')
 
 
 var favorites = JSON.parse(localStorage.getItem('Title')) || [];
@@ -17,6 +19,16 @@ var handleSearch = function(event) {
     var q = userSearch.value.trim();
     getBookData(q);
     getMovieData(q);
+    movieH5.classList = 'text-light text-center d-block';
+    bookH5.classList = 'text-light text-center d-block';
+}
+
+var newSearch = function(event) {
+    var q = event.target.innerHTML;
+    getBookData(q);
+    getMovieData(q);
+    movieH5.classList = 'text-light text-center d-block';
+    bookH5.classList = 'text-light text-center d-block';
 }
 
 var getBookData = function(q) {
@@ -37,7 +49,7 @@ var getBookData = function(q) {
 }
 
 var getMovieData = function(q) {
-    var movieUrl = "http://www.omdbapi.com/?apikey=trilogy&type=movie&s=" + q + "&t=" + q;
+    var movieUrl = "https://www.omdbapi.com/?apikey=trilogy&type=movie&s=" + q + "&t=" + q;
     fetch(movieUrl)
     .then(function (response) {
         if (response.ok) {
@@ -53,7 +65,7 @@ var getMovieData = function(q) {
     });
 }
 var getExtraMovieData = function(id) {
-    var movieUrl = "http://www.omdbapi.com/?apikey=trilogy&i=" + id;
+    var movieUrl = "https://www.omdbapi.com/?apikey=trilogy&i=" + id;
     fetch(movieUrl)
     .then(function (response) {
         if (response.ok) {
@@ -126,8 +138,6 @@ var displayMovies = function(movieData) {
 
     for (var i = 0; i < movieData.Search.length; i++) {
         
-        
-
         var title = movieData.Search[i].Title;
         var poster = movieData.Search[i].Poster;
         var year = movieData.Search[i].Year;
@@ -142,6 +152,7 @@ var displayMovies = function(movieData) {
         var p = document.createElement('p');
         var a = document.createElement('a');
         var button = document.createElement('a');
+        var br = document.createElement('br');
 
         img.addEventListener('error', function() {
             img.src = 'https://via.placeholder.com/300?text=' + title;
@@ -153,7 +164,7 @@ var displayMovies = function(movieData) {
         h5.classList = 'card-title';
         starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
         p.classList = 'card-text';
-        button.classList = 'btn btn-primary more-data';
+        button.classList = 'btn btn-primary more-data m-2';
         a.classList = 'card-link';
 
         if (favorites.includes(title)) {
@@ -182,6 +193,7 @@ var displayMovies = function(movieData) {
         span.appendChild(starIcon);
         cardBody.appendChild(p);
         cardBody.appendChild(button);
+        cardBody.appendChild(br);
         cardBody.appendChild(a);
     }
 }
@@ -195,14 +207,12 @@ var toggleDescription = function(element) {
 };
 
 var displayBooks = function(bookData) {
-    
     bookCardParent.innerHTML = null;
     
     for (var i = 0; i < bookData.items.length; i++) {
         var title = bookData.items[i].volumeInfo.title;
         var author = bookData.items[i].volumeInfo.authors || ['undefined'];
         var cover = bookData.items[i].volumeInfo.imageLinks?.thumbnail;
-        var rating = bookData.items[i].volumeInfo.averageRating;
         var date = bookData.items[i].volumeInfo.publishedDate;
         var description = bookData.items[i].volumeInfo.description;
         var link = bookData.items[i].volumeInfo.infoLink;
@@ -224,7 +234,6 @@ var displayBooks = function(bookData) {
         var ul = document.createElement('ul');
         var liAuthor = document.createElement('li');
         var liDate = document.createElement('li');
-        var liRating = document.createElement('li');
         var a = document.createElement('a');
         
         img.addEventListener('error', function() {
@@ -234,9 +243,8 @@ var displayBooks = function(bookData) {
         card.classList = 'card h-100 m-3';
         cardBodyTop.classList = 'card-body';
         cardBodyBottom.classList = 'card-body';
-        img.classList = 'card-img-top';
+        img.classList = 'card-img-top ';
         h5.classList = 'card-title';
-        // starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
         expandA.classList = 'btn btn-primary toggle-description';
         expandA.textContent = 'Click for description';
         expandDiv.className = 'collapse';
@@ -246,7 +254,6 @@ var displayBooks = function(bookData) {
         ul.classList = 'list-group list-group-flush';
         liAuthor.className = 'list-group-item';
         liDate.className = 'list-group-item';
-        liRating.className = 'list-group-item';
         a.className = 'card-link';
         a.setAttribute('target', '_blank');
 
@@ -263,7 +270,6 @@ var displayBooks = function(bookData) {
         descDiv.textContent = description;
         liAuthor.textContent = 'Author: ' + author;
         liDate.textContent = 'Release date: ' + date;
-        liRating.textContent = 'Rating: ' + rating;
         a.textContent = link;
         a.href = link;
         
@@ -278,7 +284,6 @@ var displayBooks = function(bookData) {
         card.appendChild(ul);
         ul.appendChild(liAuthor);
         ul.appendChild(liDate);
-        ul.appendChild(liRating);
         card.appendChild(cardBodyBottom);
         cardBodyBottom.appendChild(a);
         
@@ -315,12 +320,6 @@ var toggleFavorite = function(target) {
     }
     localStorage.setItem('Title', JSON.stringify([...set]));
     displayBtn();
-}
-
-var newSearch = function(event) {
-    var q = event.target.innerHTML;
-    getBookData(q);
-    getMovieData(q);
 }
 
 document.addEventListener('click', function(event) {
