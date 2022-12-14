@@ -7,6 +7,9 @@ var buttonParent = document.querySelector('.button-parent');
 var descParent = document.querySelector('.desc-parent');
 var fail = document.querySelector('.fail-button');
 
+var favorites = JSON.parse(localStorage.getItem('Title'));
+
+
 var handleSearch = function(event) {
     event.preventDefault();
     var q = userSearch.value.trim();
@@ -20,7 +23,6 @@ var getBookData = function(q) {
     .then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
-                console.log(data);
                 displayBooks(data);
             });
         } else {
@@ -38,7 +40,6 @@ var getMovieData = function(q) {
     .then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
-                console.log(data);
                 displayMovies(data);
             });
         } else {
@@ -55,7 +56,6 @@ var getExtraMovieData = function(id) {
     .then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
-                console.log(data);
                 displayExtraData(data, id);
             });
         } else {
@@ -120,20 +120,17 @@ var showHide = function (target){
 }
 
 var displayMovies = function(movieData) {
-    console.log(movieData.Search);
     movieCardParent.innerHTML = null;
     
     for (var i = 0; i < movieData.Search.length; i++) {
         
+
+
         var title = movieData.Search[i].Title;
         var poster = movieData.Search[i].Poster;
         var year = movieData.Search[i].Year;
         var imdbID = movieData.Search[i].imdbID;
         
-        console.log(title);
-        console.log(poster);
-        console.log(year);
-
         var card = document.createElement('div');
         var cardBody = document.createElement('div');
         var img = document.createElement('img');
@@ -143,6 +140,10 @@ var displayMovies = function(movieData) {
         var p = document.createElement('p');
         var a = document.createElement('a');
         var button = document.createElement('a');
+
+        img.addEventListener('error', function() {
+            img.src = 'https://via.placeholder.com/300?text=' + title;
+        })
         
         card.classList = 'card h-100 m-3';
         cardBody.classList = 'card-body';
@@ -153,7 +154,7 @@ var displayMovies = function(movieData) {
         button.classList = 'btn btn-primary more-data';
         a.classList = 'card-link';
 
-        if (favorite.includes(title)) {
+        if (favorites.includes(title)) {
             starIcon.classList = 'fa-solid fa-star d-flex justify-content-end favorite';
         } else {
             starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
@@ -198,11 +199,13 @@ var displayBooks = function(bookData) {
     for (var i = 0; i < bookData.items.length; i++) {
         var title = bookData.items[i].volumeInfo.title;
         var author = bookData.items[i].volumeInfo.authors;
-        var cover = bookData.items[i].volumeInfo.imageLinks.thumbnail;
+        var cover = bookData.items[i].volumeInfo.imageLinks?.thumbnail;
         var rating = bookData.items[i].volumeInfo.averageRating;
         var date = bookData.items[i].volumeInfo.publishedDate;
         var description = bookData.items[i].volumeInfo.description;
         var link = bookData.items[i].volumeInfo.infoLink;
+
+        author = author.join(", ");
         
         var card = document.createElement('div');
         var cardBodyTop = document.createElement('div');
@@ -220,6 +223,10 @@ var displayBooks = function(bookData) {
         var liRating = document.createElement('li');
         var a = document.createElement('a');
         
+        img.addEventListener('error', function() {
+            img.src = 'https://via.placeholder.com/300?text=' + title;
+        })
+
         card.classList = 'card h-100 m-3';
         cardBodyTop.classList = 'card-body';
         cardBodyBottom.classList = 'card-body';
@@ -239,7 +246,7 @@ var displayBooks = function(bookData) {
         a.className = 'card-link';
         a.setAttribute('target', '_blank');
 
-        if (favorite.includes(title)) {
+        if (favorites.includes(title)) {
             starIcon.classList = 'fa-solid fa-star d-flex justify-content-end favorite';
         } else {
             starIcon.classList = 'fa-regular fa-star d-flex justify-content-end favorite';
@@ -275,44 +282,40 @@ var displayBooks = function(bookData) {
     }
 }
 
-var favorite = JSON.parse(localStorage.getItem('Title'));
-console.log(favorite);
 
 
-if (favorite === undefined || favorite === null) {
-    favorite = [];
-} else {
-    console.log(favorite);
-    for (var i = 0; i < favorite.length; i++) {
+var displayBtn = function() {
+    leftParent.innerHTML = null;
+    var favorites = JSON.parse(localStorage.getItem('Title'));
+    for (var i = 0; i < favorites.length; i++) {
         var favoriteButton = document.createElement('button');
-
-        favoriteButton.classList = "btn btn-primary bg-gradient d-block m-2";
+        favoriteButton.classList = "btn btn-primary d-block bg-gradient favorite-btn m-2";
         favoriteButton.setAttribute('type', 'button');
-        favoriteButton.textContent = favorite[i];
-
+        favoriteButton.textContent = favorites[i];
+    
         leftParent.appendChild(favoriteButton);
+
     }
 }
 
 var toggleFavorite = function(target) {
+    var favorites = JSON.parse(localStorage.getItem('Title'));
     var favoriteTitle = target.previousElementSibling.innerHTML;
-    var favoriteButton = document.createElement('button');
-    if (target.matches('.fa-regular') && !favorite.includes(favoriteTitle)) {
-        favorite.push(favoriteTitle);
-        localStorage.setItem('Title', JSON.stringify(favorite));
+    var set = new Set(favorites);
 
-        favoriteButton.classList = "btn btn-primary d-block m-2";
-        favoriteButton.setAttribute('type', 'button');
-        favoriteButton.textContent = favoriteTitle;
-
-        leftParent.appendChild(favoriteButton);
-    } else if (favorite.includes(favoriteTitle)) {
-        favorite = favorite.filter(function(item) {
-            return item !== favoriteTitle; 
-        });
-        console.log(favorite);
-        localStorage.setItem("Title", JSON.stringify(favorite));
+    if (target.matches('.fa-regular') && !favorites.includes(favoriteTitle)) {
+        set.add(favoriteTitle);
+    } else if (set.has(favoriteTitle)) {
+        set.delete(favoriteTitle);
     }
+    localStorage.setItem('Title', JSON.stringify([...set]));
+    displayBtn();
+}
+
+var newSearch = function(event) {
+    var q = event.target.innerHTML;
+    getBookData(q);
+    getMovieData(q);
 }
 
 document.addEventListener('click', function(event) {
@@ -341,4 +344,11 @@ document.addEventListener('click', function(event) {
 
     }
 })
+document.addEventListener('click', function(event) {
+    if (event.target.matches('.favorite-btn')) {
+        newSearch(event);
+    }
+});
+
 searchBtn.addEventListener('click', handleSearch);
+displayBtn();
