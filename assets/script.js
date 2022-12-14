@@ -3,11 +3,13 @@ var userSearch = document.querySelector('.user-input');
 var movieCardParent = document.querySelector('.movie-card-parent');
 var bookCardParent = document.querySelector('.book-card-parent');
 var leftParent = document.querySelector('.left-parent');
+var bottomParent = document.querySelector('.bottom-parent');
 var buttonParent = document.querySelector('.button-parent');
 var descParent = document.querySelector('.desc-parent');
 var fail = document.querySelector('.fail-button');
 
-var favorites = JSON.parse(localStorage.getItem('Title'));
+
+var favorites = JSON.parse(localStorage.getItem('Title')) || [];
 
 
 var handleSearch = function(event) {
@@ -121,10 +123,10 @@ var showHide = function (target){
 
 var displayMovies = function(movieData) {
     movieCardParent.innerHTML = null;
-    
+
     for (var i = 0; i < movieData.Search.length; i++) {
         
-
+        
 
         var title = movieData.Search[i].Title;
         var poster = movieData.Search[i].Poster;
@@ -198,15 +200,17 @@ var displayBooks = function(bookData) {
     
     for (var i = 0; i < bookData.items.length; i++) {
         var title = bookData.items[i].volumeInfo.title;
-        var author = bookData.items[i].volumeInfo.authors;
+        var author = bookData.items[i].volumeInfo.authors || ['undefined'];
         var cover = bookData.items[i].volumeInfo.imageLinks?.thumbnail;
         var rating = bookData.items[i].volumeInfo.averageRating;
         var date = bookData.items[i].volumeInfo.publishedDate;
         var description = bookData.items[i].volumeInfo.description;
         var link = bookData.items[i].volumeInfo.infoLink;
 
-        author = author.join(", ");
-        
+        if (author.includes(',')) {
+            author = author.join(", ");
+        }
+
         var card = document.createElement('div');
         var cardBodyTop = document.createElement('div');
         var cardBodyBottom = document.createElement('div');
@@ -286,6 +290,7 @@ var displayBooks = function(bookData) {
 
 var displayBtn = function() {
     leftParent.innerHTML = null;
+    bottomParent.innerHTML = null;
     var favorites = JSON.parse(localStorage.getItem('Title'));
     for (var i = 0; i < favorites.length; i++) {
         var favoriteButton = document.createElement('button');
@@ -294,12 +299,12 @@ var displayBtn = function() {
         favoriteButton.textContent = favorites[i];
     
         leftParent.appendChild(favoriteButton);
-
+        bottomParent.appendChild(favoriteButton.cloneNode(true));
     }
 }
 
 var toggleFavorite = function(target) {
-    var favorites = JSON.parse(localStorage.getItem('Title'));
+    var favorites = JSON.parse(localStorage.getItem('Title')) || [];
     var favoriteTitle = target.previousElementSibling.innerHTML;
     var set = new Set(favorites);
 
