@@ -19,13 +19,11 @@
     <header class="p-3">
         <h1 class="text-center text-light mb-3">To Read or to Watch?</h1>
     </header>
-    <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary d-none fail-button" data-bs-toggle="modal"
         data-bs-target="#exampleModal">
         Launch demo modal
     </button>
 
-    <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -54,25 +52,27 @@
                 </form>
                 <div class="col-12">
                     <h5 class="text-center text-light top-h5">Favorites</h5>
-                    <div class="d-grid left-parent"></div>
+                    <div class="left-parent"></div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4 col-lg-3 col-xxl-2">
+        <div class="col-12 col-md-4 col-lg-3">
             <div>
-                <div class="col-12 col-md-4 col-lg-3 col-xxl-2 books "></div>
+                <div class="books "></div>
+                <h5 class='text-center text-light book-h5 d-none'>Books</h5>
                 <div class="book-card-parent">
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4 col-lg-3 col-xxl-2">
-            <div class="col-12 col-md-4 col-lg-3 col-xxl-2 movies"></div>
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="movies"></div>
+            <h5 class='text-center text-light movie-h5 d-none'>Movies</h5>
             <div class="movie-card-parent">
 
             </div>
         </div>
         <h5 class="text-center text-light bottom-h5">Favorites</h5>
-        <div class="d-grid bottom-parent w-50 h-50"></div>
+        <div class="bottom-parent w-50 h-50"></div>
     </div>
     </div>
     <footer class="border-top border-light p-3">

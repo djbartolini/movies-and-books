@@ -3,13 +3,21 @@ header {
     background-size: 100% 100%;
 }
 
-@media screen and (max-width: 576px) {
-    .left-parent {
+.bottom-parent{
+    display: grid;
+}
+
+.left-parent{
+    display: grid;
+}
+
+@media screen and (max-width: 768px) {
+    .left-parent, .top-h5 {
         display: none;
     }
 }
 
-@media screen and (min-width: 577px) {
+@media screen and (min-width: 769px) {
     .bottom-parent, .bottom-h5 {
         display: none;
     }
