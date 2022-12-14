@@ -2,3 +2,15 @@ header {
     background-image: url("project-header.jpg");
     background-size: 100% 100%;
 }
+
+@media screen and (max-width: 576px) {
+    .left-parent {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 577px) {
+    .bottom-parent, .bottom-h5 {
+        display: none;
+    }
+}
