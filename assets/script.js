@@ -7,18 +7,30 @@ var bottomParent = document.querySelector('.bottom-parent');
 var buttonParent = document.querySelector('.button-parent');
 var descParent = document.querySelector('.desc-parent');
 var fail = document.querySelector('.fail-button');
-var bookH5 = document.querySelector('.book-h5')
-var movieH5 = document.querySelector('.movie-h5')
-
+var bookH5 = document.querySelector('.book-h5');
+var movieH5 = document.querySelector('.movie-h5');
 
 var favorites = JSON.parse(localStorage.getItem('Title')) || [];
 
+var pageLoadOptions = ['Black Panther','Avatar', 'Strange World', 'Black Adam', 'Devotion'];
+
+var pageLoadSearch = function() {
+    q = pageLoadOptions[Math.floor(Math.random() * 5)];
+    getBookData(q);
+    getMovieData(q);
+    movieH5.textContent = 'Suggested Movies'
+    bookH5.textContent = 'Suggested Books'
+    movieH5.classList = 'text-light text-center d-block';
+    bookH5.classList = 'text-light text-center d-block';
+}
 
 var handleSearch = function(event) {
     event.preventDefault();
     var q = userSearch.value.trim();
     getBookData(q);
     getMovieData(q);
+    movieH5.textContent = 'Movies'
+    bookH5.textContent = 'Books'
     movieH5.classList = 'text-light text-center d-block';
     bookH5.classList = 'text-light text-center d-block';
 }
@@ -27,6 +39,8 @@ var newSearch = function(event) {
     var q = event.target.innerHTML;
     getBookData(q);
     getMovieData(q);
+    movieH5.textContent = 'Movies'
+    bookH5.textContent = 'Books'
     movieH5.classList = 'text-light text-center d-block';
     bookH5.classList = 'text-light text-center d-block';
 }
@@ -128,6 +142,7 @@ var displayExtraData = function(extraData, id){
 var showHide = function (target){
     if (target.nextElementSibling.style.display === "none"){
         target.nextElementSibling.style.display = "block";
+        console.log(target.nextElementSibling);
         }    else{
             target.nextElementSibling.style.display = "none";   
     }
@@ -245,7 +260,7 @@ var displayBooks = function(bookData) {
         cardBodyBottom.classList = 'card-body';
         img.classList = 'card-img-top ';
         h5.classList = 'card-title';
-        expandA.classList = 'btn btn-primary toggle-description';
+        expandA.classList = 'btn btn-primary toggle-description m-2';
         expandA.textContent = 'Click for description';
         expandDiv.className = 'collapse';
         expandDiv.setAttribute('id', bookData.items[i].id);
@@ -299,7 +314,7 @@ var displayBtn = function() {
     var favorites = JSON.parse(localStorage.getItem('Title')) || [];
     for (var i = 0; i < favorites.length; i++) {
         var favoriteButton = document.createElement('button');
-        favoriteButton.classList = "btn btn-primary d-block bg-gradient favorite-btn m-2";
+        favoriteButton.classList = "btn btn-primary bg-gradient h-25 favorite-btn m-2";
         favoriteButton.setAttribute('type', 'button');
         favoriteButton.textContent = favorites[i];
     
@@ -356,3 +371,4 @@ document.addEventListener('click', function(event) {
 
 searchBtn.addEventListener('click', handleSearch);
 displayBtn();
+pageLoadSearch();
