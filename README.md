@@ -16,7 +16,7 @@ This app allows movie and book enthusiasts to use one resource for gathering inf
 
 Preview of To Read or to Watch
 
-![image](assets/images/screenshot.png)
+![image](./assets/images/screenshot-read-or-watch.png)
 
 ## Support
 
